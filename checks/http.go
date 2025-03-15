@@ -65,8 +65,19 @@ func (c *HTTPChecker) Run(ctx *context.Context) pkg.Results {
 	return results
 }
 
-func (c *HTTPChecker) generateHTTPRequest(ctx *context.Context, check v1.HTTPCheck, connection *models.Connection) (*http.Request, error) {
+func (c *HTTPChecker) generateHTTPRequest(ctx *context.Context, connection *models.Connection) (*http.Request, error) {
 	client := http.NewClient().UserAgent("canary-checker/" + runner.Version)
+
+	// Add support for proxy
+	if check.ProxyAddress != "" {
+		ProxyAddress, err := url.Parse(check.ProxyURL)
+		if err != nil {
+			return nil, fmt.Errorf("invalid proxy URL: %w", err)
+		}
+		client.Transport(&http.Transport{
+			Proxy: http.ProxyURL(ProxyAddress),
+		})
+	}
 
 	for _, header := range check.Headers {
 		value, err := ctx.GetEnvValueFromCache(header, ctx.GetNamespace())

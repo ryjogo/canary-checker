@@ -131,6 +131,8 @@ type HTTPCheck struct {
 	Oauth2 *Oauth2Config `yaml:"oauth2,omitempty" json:"oauth2,omitempty"`
 	// TLS Config
 	TLSConfig *TLSConfig `yaml:"tlsConfig,omitempty" json:"tlsConfig,omitempty"`
+	// Proxy Support
+	ProxyAddress string `yaml:"proxyAddress,omitempty" json:"proxyAddress,omitempty"`
 }
 
 func (c HTTPCheck) GetType() string {
